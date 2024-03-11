@@ -1,9 +1,43 @@
 // EmployeeForm.tsx
+import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+import z from "zod";
+
+export const EmployeeFormDataValidation = z.object({
+  FirstName: z.string().max(255).min(3),
+  LastName: z.string().max(255).min(3),
+  DateOfBirth: z.string().nullable(),
+  Gender: z.string().nullable(),
+  Email: z.string().email().nullable(),
+  PhoneNumber: z.string().refine((value) => /^\d{10}$/.test(value), {
+    message: "Phone Number must be 10 digits",
+  }),
+  Address: z.string().max(2000).nullable(),
+  HireDate: z.string(),
+  TerminationDate: z.string().nullable(),
+  Position: z.string().max(255).nullable(),
+  DepartmentID: z.number().refine((value) => /^[1-9]\d{0,2}$/.test(String(value)), {
+    message: "Department ID must be a number between 1 and 999",
+  }).nullable(),
+  Salary: z.number().min(10000).max(10000000).nullable(),
+  ManagerID: z.number().refine((value) => /^[1-9]\d{0,2}$/.test(String(value)), {
+    message: "Manager ID must be a number between 1 and 999",
+  }).nullable(),
+  EmployeeStatus: z.string().max(255).nullable(),
+  SocialSecurityNumber: z.string().max(255).nullable(),
+  EmergencyContact:z.string().refine((value) => /^\d{10}$/.test(value), {
+    message: "Phone Number must be 10 digits",
+  }),
+  EmployeeType: z.string().max(255).nullable(),
+  WorkLocation: z.string().max(255).nullable(),
+  WorkEmail: z.string().email().max(255).nullable(),
+});
+
 
 export interface EmployeeFormData {
   EmployeeID: number;
@@ -45,7 +79,7 @@ const EmployeeForm: React.FC = () => {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<EmployeeFormData>();
+  } = useForm<EmployeeFormData>({resolver : zodResolver(EmployeeFormDataValidation)});
 
   const onSubmit: SubmitHandler<EmployeeFormData> = async (data) => {
     try {
@@ -125,6 +159,9 @@ const EmployeeForm: React.FC = () => {
             {...register("DateOfBirth")}
             className="border p-2 w-full"
           />
+          {errors.DateOfBirth && (
+            <span className="text-red-500">{errors.DateOfBirth.message}</span>
+          )}
         </div>
 
         <div className="mb-4">
@@ -139,6 +176,9 @@ const EmployeeForm: React.FC = () => {
             <option value="Female">Female</option>
             <option value="Other">Other</option>
           </select>
+          {errors.Gender && (
+            <span className="text-red-500">{errors.Gender.message}</span>
+          )}
         </div>
 
         <div className="mb-4">
@@ -170,6 +210,9 @@ const EmployeeForm: React.FC = () => {
             {...register("PhoneNumber")}
             className="border p-2 w-full"
           />
+          {errors.PhoneNumber && (
+            <span className="text-red-500">{errors.PhoneNumber.message}</span>
+          )}
         </div>
 
         <div className="mb-4">
@@ -180,6 +223,9 @@ const EmployeeForm: React.FC = () => {
             Address
           </label>
           <textarea {...register("Address")} className="border p-2 w-full" />
+          {errors.Address && (
+            <span className="text-red-500">{errors.Address.message}</span>
+          )}
         </div>
 
         <div className="mb-4">
@@ -195,6 +241,9 @@ const EmployeeForm: React.FC = () => {
             {...register("HireDate")}
             className="border p-2 w-full"
           />
+          {errors.HireDate && (
+            <span className="text-red-500">{errors.HireDate.message}</span>
+          )}
         </div>
 
         <div className="mb-4">
@@ -210,6 +259,9 @@ const EmployeeForm: React.FC = () => {
             {...register("TerminationDate")}
             className="border p-2 w-full"
           />
+          {errors.TerminationDate && (
+            <span className="text-red-500">{errors.TerminationDate.message}</span>
+          )}
         </div>
 
         <div className="mb-4">
@@ -224,6 +276,9 @@ const EmployeeForm: React.FC = () => {
             {...register("Position")}
             className="border p-2 w-full"
           />
+          {errors.Position && (
+            <span className="text-red-500">{errors.Position.message}</span>
+          )}
         </div>
 
         <div className="mb-4">
@@ -238,6 +293,9 @@ const EmployeeForm: React.FC = () => {
             {...register("DepartmentID")}
             className="border p-2 w-full"
           />
+          {errors.DepartmentID && (
+            <span className="text-red-500">{errors.DepartmentID.message}</span>
+          )}
         </div>
 
         <div className="mb-4">
@@ -252,6 +310,9 @@ const EmployeeForm: React.FC = () => {
             {...register("Salary")}
             className="border p-2 w-full"
           />
+          {errors.Salary && (
+            <span className="text-red-500">{errors.Salary.message}</span>
+          )}
         </div>
 
         <div className="mb-4">
@@ -266,6 +327,9 @@ const EmployeeForm: React.FC = () => {
             {...register("ManagerID")}
             className="border p-2 w-full"
           />
+          {errors.ManagerID && (
+            <span className="text-red-500">{errors.ManagerID.message}</span>
+          )}
         </div>
 
         <div className="mb-4">
@@ -280,6 +344,9 @@ const EmployeeForm: React.FC = () => {
             <option value="On Leave">On Leave</option>
             <option value="Terminated">Terminated</option>
           </select>
+          {errors.EmployeeStatus && (
+            <span className="text-red-500">{errors.EmployeeStatus.message}</span>
+          )}
         </div>
 
         <div className="mb-4">
@@ -294,6 +361,9 @@ const EmployeeForm: React.FC = () => {
             {...register("SocialSecurityNumber")}
             className="border p-2 w-full"
           />
+          {errors.SocialSecurityNumber && (
+            <span className="text-red-500">{errors.SocialSecurityNumber.message}</span>
+          )}
         </div>
 
         <div className="mb-4">
@@ -308,6 +378,9 @@ const EmployeeForm: React.FC = () => {
             {...register("EmergencyContact")}
             className="border p-2 w-full"
           />
+          {errors.EmergencyContact && (
+            <span className="text-red-500">{errors.EmergencyContact.message}</span>
+          )}
         </div>
 
         <div className="mb-4">
@@ -322,6 +395,9 @@ const EmployeeForm: React.FC = () => {
             {...register("EmployeeType")}
             className="border p-2 w-full"
           />
+          {errors.EmployeeType && (
+            <span className="text-red-500">{errors.EmployeeType.message}</span>
+          )}
         </div>
 
         <div className="mb-4">
@@ -336,6 +412,9 @@ const EmployeeForm: React.FC = () => {
             {...register("WorkLocation")}
             className="border p-2 w-full"
           />
+          {errors.WorkLocation && (
+            <span className="text-red-500">{errors.WorkLocation.message}</span>
+          )}
         </div>
 
         <div className="mb-4">
@@ -357,9 +436,21 @@ const EmployeeForm: React.FC = () => {
 
         <button
           type="submit"
-          className="bg-blue-500 text-white p-2 rounded hover:bg-blue-700 focus:outline-none focus:ring focus:border-blue-300"
+          className="bg-blue-500 w-full items-center justify-center text-white p-2 rounded hover:bg-blue-700 focus:outline-none focus:ring focus:border-blue-300"
         >
           Submit
+        </button>
+        <button
+          type="reset"
+          className="bg-red-500 w-full items-center justify-center text-white p-2 rounded hover:bg-red-700 focus:outline-none focus:ring focus:border-blue-300"
+          onClick={()=>{
+            setTimeout(()=>{
+              reset()
+              toast.info("form reseted successfully")
+            })
+          }}
+        >
+          Reset
         </button>
       </form>
       <ToastContainer />

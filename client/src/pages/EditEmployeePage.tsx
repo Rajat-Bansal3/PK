@@ -1,20 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
 import { useParams, useNavigate } from "react-router-dom";
 
 const EditEmployeePage = () => {
-//   const currDate = () => {
-//     const currentDate = new Date();
-//     const year = currentDate.getFullYear();
-//     const month = currentDate.getMonth() + 1; // Months are zero-indexed, so add 1
-//     const day = currentDate.getDate();
-
-//     const formattedDate = `${year}-${month < 10 ? "0" + month : month}-${
-//       day < 10 ? "0" + day : day
-//     }`;
-//     return formattedDate;
-//   };
-
   const [employee, setEmployee] = useState({
     FirstName: "",
     LastName: "",
@@ -38,7 +27,9 @@ const EditEmployeePage = () => {
   });
 
   const history = useNavigate();
+
   const { id } = useParams<{ id: string }>();
+
 
   useEffect(() => {
     const fetchEmployeeDetails = async () => {
@@ -52,9 +43,9 @@ const EditEmployeePage = () => {
         console.error("Error fetching employee details:", error);
       }
     };
-
     fetchEmployeeDetails();
   }, [id]);
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -62,18 +53,33 @@ const EditEmployeePage = () => {
   };
 
   const handleSave = async () => {
+
     try {
-      // Send API request to update employee details
+
       await axios.put(`http://localhost:3000/update-employee/${id}`, employee);
 
-      // Redirect to employee list after successful update
-      history("/employees");
-    } catch (error) {
+      toast.success("Employee added successfully", { position: "top-right" });
+
+      setTimeout(()=>{
+        history("/employees");
+      },1000)
+
+    }
+    catch (error) {
+
       console.error("Error updating employee:", error);
+
+      toast.error("Error updating employee try again later" , {position: "top-right" });
+
+      setTimeout(()=>{
+        history("/employees");
+      },1000)
+
     }
   };
 
   return (
+
     <div className="container mx-auto my-8 p-6 bg-white shadow-lg rounded-lg">
       <h2 className="text-3xl font-bold mb-4 text-center">Edit Employee</h2>
 
@@ -107,7 +113,7 @@ const EditEmployeePage = () => {
           Date of Birth:
         </label>
         <input
-          type="text"
+          type="date"
           name="DateOfBirth"
           value={employee.DateofBirth}
           onChange={handleInputChange}
@@ -323,13 +329,13 @@ const EditEmployeePage = () => {
         />
       </div>
 
-      {/* Save button */}
       <button
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full"
         onClick={handleSave}
       >
         Save
       </button>
+      <ToastContainer />
     </div>
   );
 };
